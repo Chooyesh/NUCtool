@@ -39,7 +39,7 @@ pub fn find_hwmon_with_name() -> PathBuf {
             }
         }
     }
-    panic!("未找到匹配的设备");
+    panic!("No matching device found");
 }
 
 #[tauri::command]
@@ -47,7 +47,7 @@ pub async fn save_fan_config(fan_data: FanData) -> Result<(), String> {
     let config_path = get_config_file_path()?;
     let json_data = serde_json::to_string_pretty(&fan_data).map_err(|e| e.to_string())?;
     fs::write(config_path, json_data).map_err(|e| e.to_string())?;
-    println!("风扇配置已保存");
+    println!("Fan configuration has been saved");
     Ok(())
 }
 
@@ -55,7 +55,7 @@ pub async fn save_fan_config(fan_data: FanData) -> Result<(), String> {
 pub async fn load_fan_config() -> FanData {
     let config_path = get_config_file_path().unwrap();
     if !config_path.exists() {
-        println!("配置文件不存在");
+        println!("Configuration file does not exist");
     }
     let json_data = fs::read_to_string(config_path)
         .map_err(|e| e.to_string())
@@ -63,6 +63,6 @@ pub async fn load_fan_config() -> FanData {
     let fan_data: FanData = serde_json::from_str(&json_data)
         .map_err(|e| e.to_string())
         .unwrap();
-    println!("风扇配置已加载");
+    println!("Fan configuration has been loaded");
     fan_data
 }

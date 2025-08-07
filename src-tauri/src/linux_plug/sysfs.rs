@@ -76,10 +76,10 @@ pub fn get_kernel_version() -> i64 {
 
 pub fn sys_init() {
     if Uid::current().is_root() {
-        println!("{}", "当前以 root 用户身份运行".red());
+        println!("{}", "Currently running as a root user".red());
         return;
     } else {
-        println!("{}", "当前以普通用户身份运行".red());
+        println!("{}", "Currently running as a regular user".red());
         return;
     }
     /*

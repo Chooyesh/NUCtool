@@ -21,12 +21,12 @@ use crate::plug::{
 
 pub fn fan_init() {
     ApiFan::init().set_fan_control();
-    println!("{}", "风扇初始化成功".green());
+    println!("{}", "Fan initialization successful".green());
 }
 
 pub fn fan_reset() {
     ApiFan::init().set_fan_auto();
-    println!("{}", "风扇状态重置".red());
+    println!("{}", "Fan state reset".red());
 }
 
 
@@ -68,7 +68,7 @@ pub fn cpu_temp(
              &cpu_out, &gpu_out, &fan_cache[0], &fan_cache[1]);
     // 跳过满转风扇重复写入
     if (cpu_out > 95 || gpu_out > 95) && fan_cache[0] + fan_cache[1] == 200 {
-        println!("{}", "风扇跳过满转重复写入".red());
+        println!("{}", "Fan: Skipped repeated write for full speed rotation".red());
         thread::sleep(Duration::from_secs(4));
         return;
     }
@@ -78,11 +78,11 @@ pub fn cpu_temp(
         thread::sleep(Duration::from_secs(4));
         return;
     } else if cpu_out < 0 || gpu_out < 0 {
-        println!("温度读取异常, cpu: {:?}, gpu: {:?}", cpu_out, gpu_out);
+        println!("Temperature reading exception, cpu: {:?}, gpu: {:?}", cpu_out, gpu_out);
         return;
     }
     if driver.get_fan_mode() == 2 {
-        print!("风扇异常自动恢复: ");
+        print!("Fan abnormality automatically recovered: ");
         thread::sleep(Duration::from_secs_f64(1.5));
         driver.set_fan_auto();
         thread::sleep(Duration::from_secs_f64(2.5));
@@ -120,7 +120,7 @@ pub fn cpu_temp(
             }
         }
         if fan_cache[0] == handle_left && fan_cache[1] == handle_right {
-            println!("{}", "风扇速度未变化".green());
+            println!("{}", "Fan speed did not change".green());
             thread::sleep(Duration::from_secs(3));
             return;
         }
@@ -133,7 +133,7 @@ pub fn cpu_temp(
 #[tauri::command]
 pub async fn get_fan_speeds(window: Window) {
     thread::spawn(move || {
-        println!("{}", "推送风扇信息".green());
+        println!("{}", "Pushing fan information".green());
         let driver = ApiFan::init();
         loop {
             thread::sleep(Duration::from_secs_f64(2.5));

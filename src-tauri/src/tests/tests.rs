@@ -12,7 +12,7 @@ use crate::plug::struct_set::ApiFan;
 
 #[test]
 fn test_api_fan() {
-    println!("请随时准备好你的NUC控制台基准模式，出现异常请打开基准模式");
+    println!("Please prepare your NUC console benchmark mode, if there is an exception, please open the benchmark mode");
     wmi_security();
     let api = ApiFan::init();
     api.set_fan_auto();
@@ -45,7 +45,7 @@ fn test_api_fan() {
 #[test]
 #[cfg(windows)]
 fn led_color() {
-    println!("请查看你的LED");
+    println!("Please check your LED");
     wmi_security();
     let api = ApiFan::init();
     api.set_ac_led_color_y();

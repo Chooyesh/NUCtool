@@ -1,5 +1,10 @@
 # NUCtool(Changelog)
 
+## [0.4.5-log-2-diy-V2] - 2025-8-25
+- translated to English Language
+- Little design edits
+
+
 ## [0.4.4] - 2025-3-14
 #### 新特性
 - 对转速缓存，减少频繁写入

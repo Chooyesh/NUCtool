@@ -10,7 +10,8 @@ const leftFanCurve = new Chart(leftFanCtx, {
             label: 'CPU Fan Speed',
             data: Array(66).fill(50),  // 默认风扇速度
             borderColor: 'blue',
-            fill: false
+            fill: false,
+            color: '#fff'
         }]
     },
     options: {
@@ -113,12 +114,14 @@ function initSpeedCharts() {
                 label: 'CPU Fan Speed',
                 data: Array(21).fill(0),
                 borderColor: 'blue',
-                fill: false
+                fill: false,
+                color: '#fff'
             }, {
                 label: 'GPU Fan Speed',
                 data: Array(21).fill(0),
                 borderColor: 'green',
-                fill: false
+                fill: false,
+                color: '#fff'
             }]
         },
         options: {
@@ -149,12 +152,14 @@ function initSpeedCharts() {
                 label: 'CPU Temperature',
                 data: Array(21).fill(0),
                 borderColor: 'blue',
-                fill: false
+                fill: false,
+                color: '#fff'
             }, {
                 label: 'GPU Temperature',
                 data: Array(21).fill(0),
                 borderColor: 'green',
-                fill: false
+                fill: false,
+                color: '#fff'
             }]
         },
         options: {
@@ -201,11 +206,11 @@ function updateFanSpeeds(leftFanSpeedChart, rightFanSpeedChart, left_fan_speed, 
 async function loadConfigData() {
     const fanData = await window.__TAURI__.core.invoke('load_fan_config');
     if (fanData) {
-        // 更新左风扇曲线数据
+        // update left fan curve data
         leftFanCurve.data.datasets[0].data = fanData.left_fan.map(point => point.speed);
         leftFanCurve.update();
 
-        // 更新右风扇曲线数据
+        // update right fan curve data
         rightFanCurve.data.datasets[0].data = fanData.right_fan.map(point => point.speed);
         rightFanCurve.update();
     } else {
@@ -221,7 +226,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const saveConfigButton = document.getElementById('saveConfigButton');
     let isRunning = false;
     // await loadConfigData();
-    // 定时更新风扇转速
+    // update fan speed data every 2.5 seconds
 
     // setInterval(async () => {
     //     // const speeds = await window.__TAURI__.core.invoke('get_fan_speeds');
@@ -229,14 +234,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // }, 2500);
     async function listen_to_greet() {
       await listen('get-fan-speeds', (speeds) => {
-        // event.payload 才是实际的结构体
+        // event.payload is the actual structure
         console.log(speeds.payload);
         updateFanSpeeds(leftFanSpeedChart, rightFanSpeedChart, speeds.payload.left_fan_speed, speeds.payload.right_fan_speed, speeds.payload.left_temp, speeds.payload.right_temp);
       });
     }
     await window.__TAURI__.core.invoke('get_fan_speeds');
     await listen_to_greet();
-    // 按钮点击事件
+    // button click event
     startStopButton.addEventListener('click', () => {
         isRunning = !isRunning;
         if (isRunning) {
@@ -244,7 +249,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             startStopButton.style.backgroundColor = 'rgb(255, 0, 0, 0.3)';
             startStopButton.classList.remove('stopped');
 
-            // 获取数据并传递给 Rust
+                // get data and pass to Rust
             const fanData = getFanCurveData();
             window.__TAURI__.core.invoke('start_fan_control', {fanData});
         } else {
@@ -252,16 +257,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             startStopButton.style.backgroundColor = 'rgb(255, 182, 193, 0.3)';
             startStopButton.classList.add('stopped');
 
-            // 停止风扇控制
+            // stop fan control
             window.__TAURI__.core.invoke('stop_fan_control');
         }
     });
-    // 加载配置按钮
+    // load config button
     const loadConfigButton = document.getElementById('loadConfigButton');
     loadConfigButton.addEventListener('click', async () => {
         await loadConfigData();
     });
-    // 保存配置按钮
+    // save config button
     saveConfigButton.addEventListener('click', () => {
         const fanData = getFanCurveData();
         window.__TAURI__.core.invoke('save_fan_config', {fanData});
@@ -270,7 +275,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const autostartEnable = await window.__TAURI__.core.invoke('plugin:autostart|is_enabled');
     console.log(autostartEnable);
     if(autostartEnable) {
-        console.log("自动运行");
+        console.log("auto start");
+        // was commented
         // loadConfigData();
         loadConfigButton.click();
         startStopButton.click();
@@ -278,7 +284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 });
 
-// 获取所有点信息并传递给 Rust
+// get all points and pass to Rust
 function getFanCurveData() {
     const leftFanData = leftFanCurve.data.labels.map((temp, index) => {
         return {temperature: temp, speed: leftFanCurve.data.datasets[0].data[index]};

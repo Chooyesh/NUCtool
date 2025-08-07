@@ -21,7 +21,7 @@ pub fn privilege_escalation() {
     if out.to_string().trim().parse::<i64>().unwrap() == 0 {
         if let Ok(path) = env::current_exe() {
             let path_str = path.to_string_lossy();
-            println!("当前程序的路径是: {}", &path_str);
+            println!("The path of the current program is: {}", &path_str);
             ps.run(format!(r#"Start-Process "{}" -Verb RunAs"#, path_str).as_str())
                 .unwrap();
             process::exit(0);
